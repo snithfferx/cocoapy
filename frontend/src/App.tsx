@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import UploadImage from "./components/UploadImage";
 import LandingPage from "./components/LandingPage";
 import Results from "./components/Results";
+import About from "./components/About";
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/upload" element={<UploadImage />} />
           <Route path="/results" element={<Results />} />
-          {/* Puedes agregar más rutas como /results o /about */}
+          <Route path="/about" element={<About />} />
         </Routes>
       </div>
   );

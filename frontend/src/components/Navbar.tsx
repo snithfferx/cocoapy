@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom"; // Si usas routing
+import LoginModal from "./LoginModal";
+import { useState } from "react";
 
 function Navbar() {
+  const [showLogin, setShowLogin] = useState(false);
+  const [user, setUser] = useState<string | null>(null);
   return (
     <nav className="bg-gray-800 text-white px-6 py-4 shadow-md">
       <div className="flex justify-between items-center">
@@ -18,11 +22,24 @@ function Navbar() {
 
         {/* Botón de login */}
         <div>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-300">
-            Iniciar sesión
-          </button>
+          {user ? (
+            <span className="text-sm">👤 {user}</span>
+          ) : (
+            <button
+              onClick={() => setShowLogin(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-300"
+            >
+              Iniciar sesión
+            </button>
+          )}
         </div>
       </div>
+      {showLogin && (
+        <LoginModal
+          onClose={() => setShowLogin(false)}
+          onLogin={(username) => setUser(username)}
+        />
+      )}
     </nav>
   );
 }
