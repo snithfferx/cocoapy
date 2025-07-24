@@ -1,30 +1,17 @@
-# from fastapi import FastAPI, File, UploadFile,Form
-# from fastapi.responses import JSONResponse
-# from colony_counter import contar_colonias_por_cuadrante
-# from fastapi.staticfiles import StaticFiles
-# from io import BytesIO
-
-# app = FastAPI()
-
-# @app.post("/contar")
-# async def contar(file: UploadFile = File(...),sensibilidad: int = Form(50)):
-#     contenido = await file.read()
-#     # total, _ = contar_colonias(BytesIO(contenido))
-#     total, imagen_base64,totales, cortes = contar_colonias_por_cuadrante(BytesIO(contenido),sensibilidad=sensibilidad)
-#     return JSONResponse({
-#         "colonias_detectadas": total,
-#         "imagen_procesada": imagen_base64,
-#         "colonias_por_cuadrante": totales,
-#         "cortes_por_cuadrante": cortes
-#     })
-# app.mount("/", StaticFiles(directory="static", html=True), name="static")
-
 from flask import Flask, request, jsonify, send_from_directory
 from colony_counter import contar_colonias_por_cuadrante
 from io import BytesIO
-import os
+from fastapi.middleware.cors import CORSMiddleware
 
 app = Flask(__name__, static_folder='static')
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # Vite default
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.route("/contar", methods=["POST"])
 def contar():
