@@ -15,7 +15,7 @@ This is a simple application to count colonies in a picture.
 3. Run the application:
 
    ```bash
-   uvicorn main:app --reload
+   flask run --app main
    ```
 
 ## How to use
