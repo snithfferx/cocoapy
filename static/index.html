@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/styles.css" />
+  <title>Contador de Colonias - Análisis Automático</title>
+  <meta name="description"
+    content="Aplicación para contar automáticamente colonias bacterianas en imágenes de laboratorio" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+  <imageUploadForm>
+    <div class="upload-container">
+      <div class="upload-card">
+        <div class="upload-header">
+          <h1>Contador de Colonias</h1>
+          <p>
+            Sube una imagen para contar automáticamente las colonias
+            bacterianas
+          </p>
+        </div>
+        <form method="POST" id="upload-form" enctype="multipart/form-data" class="upload-form">
+          <!-- Configuración del análisis -->
+          <div class="form-section">
+            <h3>Configuración del Análisis</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="name">Nombre del análisis:</label>
+                <input type="text" id="name" name="name" required placeholder="Ej: Muestra_001" />
+              </div>
+              <div class="form-group">
+                <label for="quarters">Cuadrantes:</label>
+                <select id="quarters" name="quarters">
+                  <option value="2">2x2 (4 cuadrantes)</option>
+                  <option value="3">3x3 (9 cuadrantes)</option>
+                  <option value="4">4x4 (16 cuadrantes)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subida de imagen -->
+          <div class="form-section">
+            <h3>Imagen a Analizar</h3>
+            <div class="file-upload-area" id="fileUploadArea">
+              <input type="file" id="image" name="image" accept="image/*" required class="file-input" />
+              <div class="file-upload-content">
+                <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7,10 12,15 17,10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                <p class="upload-text">
+                  <span class="upload-main">Haz clic para subir una imagen</span>
+                  <span class="upload-sub">o arrastra y suelta aquí</span>
+                </p>
+                <p class="upload-formats">PNG, JPG, JPEG hasta 10MB</p>
+              </div>
+              <div class="file-preview" id="filePreview" style="display: none">
+                <img id="previewImage" alt="Vista previa" />
+                <div class="file-info">
+                  <span id="fileName"></span>
+                  <button type="button" id="removeFile" class="remove-btn">
+                    ×
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sensibilidad -->
+          <div class="form-section">
+            <h3>Sensibilidad de Detección</h3>
+            <div class="sensitivity-control">
+              <label for="sensitivity">Sensibilidad: <span id="sensitivityValue">50</span></label>
+              <input type="range" id="sensitivity" name="sensitivity" min="1" max="100" value="50"
+                class="sensitivity-slider" />
+              <div class="sensitivity-labels">
+                <span>Baja (1)</span>
+                <span>Media (50)</span>
+                <span>Alta (100)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botón de envío -->
+          <div class="form-actions">
+            <button type="submit" class="submit-btn" id="submitBtn">
+              <span class="btn-text">Analizar Imagen</span>
+              <div class="btn-loader" style="display: none">
+                <div class="spinner"></div>
+                Procesando...
+              </div>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </imageUploadForm>
+  <div class="results-container" style="display: none;">
+    <div class="results-card">
+      <div class="results-header">
+        <h2>Resultados del Análisis</h2>
+        <div class="average-display">
+          <span class="average-label">Promedio de Colonias:</span>
+          <span class="average-value" id="resultAvg"></span>
+        </div>
+      </div>
+
+      <div class="results-content">
+        <!-- Imagen Overview -->
+        <div class="overview-section">
+          <h3>Vista General</h3>
+          <div class="overview-image">
+            <img id="resultOvi" src="" alt="Vista general con cuadrantes" class="overview-img" />
+          </div>
+        </div>
+
+        <!-- Detalles por cuadrante -->
+        <div class="quarters-section">
+          <h3>Detalles por Cuadrante para <span id="resultName"></span></h3>
+          <div class="quarters-grid" id="desglose-list"></div>
+        </div>
+
+        <!-- Estadísticas adicionales -->
+        <div class="stats-section">
+          <h3>Estadísticas</h3>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-label">Total de Cuadrantes:</span>
+              <span class="stat-value" id="resultTotalValues"></span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Colonias Totales:</span>
+              <span class="stat-value" id="resultTotalSum"></span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Máximo por Cuadrante:</span>
+              <span class="stat-value" id="resultMaximum"></span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Mínimo por Cuadrante:</span>
+              <span class="stat-value" id="resultMaxQuarter"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-actions">
+        <button onclick="window.location.href='/' " class="new-analysis-btn">
+          Nuevo Análisis
+        </button>
+        <button onclick="window.print()" class="print-btn">
+          Imprimir Resultados
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="error-container" style="display: none;">
+    <div class="error-card">
+      <div class="error-icon">⚠️</div>
+      <h2>Error en el Procesamiento</h2>
+      <p id="errorMessage"></p>
+      <button onclick="window.location.reload()" class="retry-btn">
+        Intentar de Nuevo
+      </button>
+    </div>
+  </div>
+  <script>
+    // Manejo de contenedores
+    const resultContainer = document.querySelector('.results-container');
+    const uploadContainer = document.querySelector('.upload-container');
+    const errorContainer = document.querySelector('.error-container');
+    // Manejo de resultados
+    const resultAvg = document.getElementById('resultAvg');
+    const OverviewImage = document.getElementById('resultOvi');
+    const resultName = document.getElementById('resultName');
+    const resultTotalValues = document.getElementById('resultTotalValues');
+    const resultTotalSum = document.getElementById('resultTotalSum');
+    const resultMaximum = document.getElementById('resultMaximum');
+    const resultMaxQuarter = document.getElementById('resultMaxQuarter');
+    // Manejo del slider de sensibilidad
+    const sensitivitySlider = document.getElementById('sensitivity');
+    const sensitivityValue = document.getElementById('sensitivityValue');
+
+    sensitivitySlider?.addEventListener('input', (e) => {
+      const target = e.target;
+      const value = parseInt(target.value, 10);
+      if (value < 1 || value > 100) {
+        target.value = Math.min(Math.max(1, value), 100); // Clamp value between 1-100
+      }
+      if (sensitivityValue) {
+        sensitivityValue.textContent = target.value;
+      }
+    });
+
+    // Manejo de la subida de archivos
+    const fileInput = document.getElementById('image');
+    const fileUploadArea = document.getElementById('fileUploadArea');
+    const filePreview = document.getElementById('filePreview');
+    const previewImage = document.getElementById('previewImage');
+    const fileName = document.getElementById('fileName');
+    const removeFileBtn = document.getElementById('removeFile');
+
+    // Drag and drop
+    fileUploadArea?.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      fileUploadArea.classList.add('drag-over');
+    });
+
+    fileUploadArea?.addEventListener('dragleave', () => {
+      fileUploadArea.classList.remove('drag-over');
+    });
+
+    fileUploadArea?.addEventListener('drop', (e) => {
+      e.preventDefault();
+      fileUploadArea.classList.remove('drag-over');
+
+      const files = e.dataTransfer?.files;
+      if (files && files.length > 0) {
+        handleFileSelect(files[0]);
+      }
+    });
+
+    // Click para seleccionar archivo
+    fileUploadArea?.addEventListener('click', (e) => {
+      // Solo abrir el selector si no se hizo clic en el input directamente
+      if (e.target !== fileInput) {
+        fileInput?.click();
+      }
+    });
+
+    fileInput?.addEventListener('change', (e) => {
+      const target = e.target;
+      const file = target.files?.[0];
+      if (file) {
+        handleFileSelect(file);
+      }
+    });
+
+    // Remover archivo
+    removeFileBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (fileInput) fileInput.value = '';
+      if (filePreview) filePreview.style.display = 'none';
+      if (fileUploadArea) {
+        fileUploadArea.style.display = 'flex';
+        (fileUploadArea.querySelector('.file-upload-content')).style.display = 'block';
+      }
+    });
+
+    function handleFileSelect(file) {
+      if (!file.type.startsWith('image/')) {
+        alert('Por favor selecciona un archivo de imagen válido.');
+        return;
+      }
+
+      if (file.size > 10 * 1024 * 1024) { // 10MB
+        alert('El archivo es demasiado grande. Máximo 10MB.');
+        return;
+      }
+
+      // Mostrar vista previa
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (previewImage && e.target?.result) {
+          previewImage.src = e.target.result;
+        }
+        if (fileName) {
+          fileName.textContent = file.name;
+        }
+        if (filePreview) {
+          filePreview.style.display = 'block';
+        }
+        if (fileUploadArea) {
+          const uploadContent = fileUploadArea.querySelector('.file-upload-content');
+          if (uploadContent) {
+            uploadContent.style.display = 'none';
+          }
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+    // Manejo del formulario
+    const form = document.querySelector('.upload-form');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.querySelector('.btn-text');
+    const btnLoader = document.querySelector('.btn-loader');
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (btnText) btnText.style.display = 'none';
+      if (btnLoader) btnLoader.style.display = 'flex';
+      if (submitBtn) submitBtn.disabled = true;
+      // const fileInput = document.getElementById("file");
+      const formData = new FormData();
+      formData.append("file", fileInput.files[0]);
+      formData.append(
+        "sensitivity",
+        document.getElementById("sensitivity").value
+      );
+      formData.append(
+        'quarters',
+        document.getElementById('quarters').value
+      );
+      formData.append(
+        'name',
+        document.getElementById('name').value
+      );
+
+      try {
+        const res = await fetch("/contar", {
+          method: "POST",
+          body: formData,
+        });
+        const response = await res.json();
+        ;/* 
+        {
+        status: 'ok',
+        data: {
+          avg: average,
+          ovi: overviewImg64,
+          totals: {
+            quarters: quartersOQ,
+            values: totalColoniesByQuarter,
+            images: quarterImage
+          },
+          name: name
+        }
+      } */
+        if (response.status == 'ok') {
+          const data = response.data;
+          console.log(data);
+          resultName.textContent = data.name;
+          resultAvg.textContent = data.avg;
+          OverviewImage.src = `data:image/png;base64,${data.ovi}`;
+          resultTotalValues.textContent = data.totals.values.length;
+          resultTotalSum.textContent = data.totals.values.reduce((sum, count) => sum + count, 0);
+          resultMaximum.textContent = Math.max(...data.totals.values);
+          resultMaxQuarter.textContent = Math.min(...data.totals.values);
+          const desgloseList = document.getElementById("desglose-list");
+          desgloseList.innerHTML = ""; // Limpiar lista previa
+          let html = '';
+          data.totals.values.forEach((count, index) => {
+            html += `<div class="quarter-card"><div class="quarter-header"><span class="quarter-title">Cuadrante ${index + 1}</span><span class="quarter-count">${count} colonias</span></div>${data.totals.images[index] ? `<div class="quarter-image"><img src="data:image/png;base64,${data.totals.images[index]}" alt="Cuadrante ${index + 1}"class="quarter-img"/></div>` : ''}</div>`;
+          });
+          desgloseList.innerHTML = html;
+          uploadContainer.style.display = 'none';
+          resultContainer.style.display = 'block';
+        } else {
+          uploadContainer.style.display = 'none';
+          errorContainer.style.display = 'block';
+        }
+      } catch (err) {
+        console.error('Error processing image:', err);
+        uploadContainer.style.display = 'none';
+        errorContainer.style.display = 'block';
+        const errorMessage = document.getElementById('errorMessage');
+        errorMessage.textContent = `Error al procesar la imagen: ${err.message || 'Error desconocido'}`;
+      } finally {
+        // Reset loading state
+        if (btnText) btnText.style.display = 'block';
+        if (btnLoader) btnLoader.style.display = 'none';
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+
+</html>
