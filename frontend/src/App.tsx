@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import UploadImage from "./components/UploadImage";
 import LandingPage from "./components/LandingPage";
@@ -6,7 +6,6 @@ import Results from "./components/Results";
 
 function App() {
   return (
-    <BrowserRouter>
       <div className="min-h-screen bg-gray-100">
         <Navbar />
         <Routes>
@@ -16,7 +15,6 @@ function App() {
           {/* Puedes agregar más rutas como /results o /about */}
         </Routes>
       </div>
-    </BrowserRouter>
   );
 }
 
