@@ -1,7 +1,11 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, g, request, jsonify, send_from_directory
 from colony_counter import contar_colonias_por_cuadrante
 from io import BytesIO
 from fastapi.middleware.cors import CORSMiddleware
+from werkzeug.security import generate_password_hash,check_password_hash
+from connection import get_db_connection
+
+connection = get_db_connection()
 
 app = Flask(__name__, static_folder='static')
 
@@ -12,6 +16,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Servir archivos estáticos como en FastAPI
+@app.route("/", defaults={"path": "index.html"})
 
 @app.route("/contar", methods=["POST"])
 def contar():
@@ -47,8 +54,52 @@ def contar():
             'message': str(e)
         }), 400
 
-# Servir archivos estáticos como en FastAPI
-@app.route("/", defaults={"path": "index.html"})
+@app.route("/register", methods=["POST"])
+def register():
+    data = request.json
+    username = data.get("username")
+    email = data.get("email")
+    password = data.get("password")
+
+    if not username or not email or not password:
+        return jsonify({"error": "Faltan campos"}), 400
+
+    hashed_pw = generate_password_hash(password)
+
+    cursor = connection.cursor()
+
+    try:
+        cursor.execute("""
+            INSERT INTO usuarios (nombre_usuario, correo, contraseña_hash)
+            VALUES (%s, %s, %s)
+        """, (username, email, hashed_pw))
+        connection.commit()
+        return jsonify({"message": "Usuario registrado exitosamente"}), 201
+    except connection.Error as err:
+        return jsonify({"error": str(err)}), 500
+    finally:
+        cursor.close()
+        connection.close()
+
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.json
+    username = data.get("username")
+    password = data.get("password")
+
+    cursor = connection.cursor(dictionary=True)
+
+    cursor.execute("SELECT * FROM usuarios WHERE nombre_usuario = %s", (username,))
+    user = cursor.fetchone()
+
+    cursor.close()
+    connection.close()
+
+    if user and check_password_hash(user["contraseña_hash"], password):
+        return jsonify({"message": "Login exitoso", "user": user["nombre_usuario"]}), 200
+    else:
+        return jsonify({"error": "Credenciales inválidas"}), 401
+
 @app.route("/<path:path>")
 def static_files(path):
     return send_from_directory(app.static_folder, path)
