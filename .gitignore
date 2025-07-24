@@ -16,3 +16,6 @@
 !run_app.bat
 !Scripts/
 !Scripts/*
+# Database
+!db/
+!db/*
