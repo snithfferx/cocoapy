@@ -1,9 +1,9 @@
 from flask import Flask, g, request, jsonify, send_from_directory
-from colony_counter import contar_colonias_por_cuadrante
+from modules.colonies.colony_counter import contar_colonias_por_cuadrante
 from io import BytesIO
 from fastapi.middleware.cors import CORSMiddleware
 from werkzeug.security import generate_password_hash,check_password_hash
-from connection import get_db_connection
+from modules.core.connection import get_db_connection
 
 connection = get_db_connection()
 
