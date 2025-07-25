@@ -5,3 +5,5 @@ python-multipart
 mysql-connector-python 
 python-dotenv
 werkzeug
+flask-jwt-extended
+flask-cors

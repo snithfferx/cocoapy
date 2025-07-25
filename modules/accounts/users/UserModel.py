@@ -1,6 +1,6 @@
 from modules.core.connection import get_db_connection
 
-def add_user(user_data: dict) -> str:
+def addUser(user_data: dict) -> str:
     connection = get_db_connection()
     cursor = connection.cursor()
     try:
@@ -14,7 +14,7 @@ def add_user(user_data: dict) -> str:
         cursor.close()
         connection.close()
 
-def get_user(user_id: int) -> dict:
+def getUser(user_id: int) -> dict:
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
     cursor.execute("SELECT * FROM users WHERE user_id = %s", (user_id,))
@@ -23,7 +23,7 @@ def get_user(user_id: int) -> dict:
     connection.close()
     return user if user else {}
 
-def update_user(user_id: int, user_data: dict) -> str:
+def updateUser(user_id: int, user_data: dict) -> str:
     connection = get_db_connection()
     cursor = connection.cursor()
     try:
@@ -37,7 +37,7 @@ def update_user(user_id: int, user_data: dict) -> str:
         cursor.close()
         connection.close()
 
-def delete_user(user_id: int) -> str:
+def deleteUser(user_id: int) -> str:
     connection = get_db_connection()
     cursor = connection.cursor()
     try:
@@ -49,3 +49,30 @@ def delete_user(user_id: int) -> str:
     finally:
         cursor.close()
         connection.close()
+
+def getAllUsers() -> list:
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM users")
+    users = cursor.fetchall()
+    cursor.close()
+    connection.close()
+    return users if users else []
+
+def getUserByName(username: str) -> dict:
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+    user = cursor.fetchone()
+    cursor.close()
+    connection.close()
+    return user if user else {}
+
+def getUserByEmail(email: str) -> dict:
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+    user = cursor.fetchone()
+    cursor.close()
+    connection.close()
+    return user if user else {}
