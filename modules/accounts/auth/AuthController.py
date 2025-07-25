@@ -1,7 +1,8 @@
 from flask_jwt_extended import create_access_token
 from werkzeug.security import generate_password_hash,check_password_hash
 from modules.accounts.users.UsersController import create, readByName, readByEmail, exist
-
+from modules.accounts.sessions.SessionsController import create as createSession, read as readSession, validateSession, update as updateSession, delete as deleteSession
+import time
 
 def userLogin(username,email, password):
     xsts = exist(username, email)
@@ -19,11 +20,35 @@ def userLogin(username,email, password):
     else:
         return {"error": "Credenciales inválidas", "code": 401}
 
-    if not user or not check_password_hash(user["password"], password):
+    if not user or not check_password_hash(str(user["password"]), password):
         return {"error": "Credenciales inválidas", "code": 401}
 
     access_token = create_access_token(identity=user["id"])
-    return {"message": "Login exitoso", "token": access_token, "code":200}
+    # Save session data
+    try:
+        userID = int(user["id"])
+        expiration = time.time() + ((60 * 60) * 4)  # 4 hours
+        if validateSession(userID):
+            session = readSession(userID)
+            # if it exists verify if the session is valid
+            if session["expire"] > expiration:
+                # Update session if it exists but is expired
+                essionUpdated = updateSession(userID, access_token, expiration)
+                if "error" in essionUpdated:
+                    return {"error": essionUpdated["error"], "code": 500}
+            else:
+                # Delete the old session
+                oldSession = deleteSession(userID)
+                if "error" in oldSession:
+                    return {"error": oldSession["error"], "code": 500}
+        else:
+            # Create a new session
+            newSession = createSession(userID,access_token,expiration)
+            if "error" in newSession:
+                return {"error": newSession["error"], "code": 500}
+        return {"message": "Login exitoso", "token": access_token, "code":200}
+    except Exception as e:
+        return {"error": f"Error al crear sesión: {str(e)}", "code": 500}
 
 def userRegistration(username,email, password):
     if not username or not email or not password:

@@ -42,7 +42,7 @@ CREATE TABLE sessions (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT,
   session_token VARCHAR(255) NOT NULL UNIQUE,
-  expiration TIMESTAMP NOT NULL,
+  expire TIMESTAMP NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES usuarios(id)
 );

@@ -2,7 +2,7 @@ from modules.core.connection import get_db_connection
 
 def addUser(user_data: dict) -> str:
     connection = get_db_connection()
-    cursor = connection.cursor()
+    cursor = connection.cursor(dictionary=True)
     try:
         cursor.execute("INSERT INTO users (username, email, password) VALUES (%s, %s, %s)",
                        (user_data['username'], user_data['email'], user_data['password']))
@@ -14,17 +14,18 @@ def addUser(user_data: dict) -> str:
         cursor.close()
         connection.close()
 
-def getUser(user_id: int) -> dict:
+def getUser(user_id: int) -> dict | None:
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
     cursor.execute("SELECT * FROM users WHERE user_id = %s", (user_id,))
     user = cursor.fetchone()
     cursor.close()
     connection.close()
-    return user if user else {}
+    return user if user else None
 
 def updateUser(user_id: int, user_data: dict) -> str:
     connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
     cursor = connection.cursor()
     try:
         cursor.execute("UPDATE users SET username = %s, email = %s, password = %s WHERE user_id = %s",
@@ -39,6 +40,7 @@ def updateUser(user_id: int, user_data: dict) -> str:
 
 def deleteUser(user_id: int) -> str:
     connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
     cursor = connection.cursor()
     try:
         cursor.execute("DELETE FROM users WHERE user_id = %s", (user_id,))
@@ -59,14 +61,14 @@ def getAllUsers() -> list:
     connection.close()
     return users if users else []
 
-def getUserByName(username: str) -> dict:
+def getUserByName(username: str) -> dict|None:
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
     cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
     user = cursor.fetchone()
     cursor.close()
     connection.close()
-    return user if user else {}
+    return user if user else None
 
 def getUserByEmail(email: str) -> dict:
     connection = get_db_connection()
@@ -75,4 +77,4 @@ def getUserByEmail(email: str) -> dict:
     user = cursor.fetchone()
     cursor.close()
     connection.close()
-    return user if user else {}
+    return user if user else None

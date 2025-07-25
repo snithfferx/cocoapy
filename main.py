@@ -58,6 +58,9 @@ def contar():
 
 @app.route("/register", methods=["POST"])
 def register():
+    if not request.json or "password" not in request.json:
+        return jsonify({"error": "Credenciales inválidas"}), 400
+
     data = request.json
     username = data.get("username")
     email = data.get("email")

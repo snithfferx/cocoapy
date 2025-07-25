@@ -13,31 +13,31 @@ def read(user_id: int) -> dict:
         return {"error": "User not found"}
     return user
 
-def readAll() -> list:
+def readAll() -> list[dict[str, str|int]] | dict[str, str]:
     users = getAllUsers()
     if not users:
         return {"error": "No users found"}
     return users
 
-def readByName(username: str) -> dict:
+def readByName(username: str) -> dict[str, str|int] | dict[str, str]:
     user = getUserByName(username)
     if not user:
         return {"error": "User not found"}
     return user
 
-def readByEmail(email: str) -> dict:
+def readByEmail(email: str) -> dict[str, str|int] | dict[str, str]:
     user = getUserByEmail(email)
     if not user:
         return {"error": "User not found"}
     return user
 
-def update(user_id: int, user_data: dict) -> dict:
+def update(user_id: int, user_data: dict) -> dict[str, str]:
     result = updateUser(user_id, user_data)
     if "Error" in result:
         return {"error": result}
     return {"message": "User updated successfully"}
 
-def delete(user_id: int) -> dict:
+def delete(user_id: int) -> dict[str, str]:
     result = deleteUser(user_id)
     if "Error" in result:
         return {"error": result}
