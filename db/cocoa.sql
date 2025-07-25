@@ -36,4 +36,21 @@ CREATE TABLE muestra (
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
     INDEX (usuario_id),
     INDEX (title)
-)
+);
+
+CREATE TABLE sessions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT,
+  session_token VARCHAR(255) NOT NULL UNIQUE,
+  expiration TIMESTAMP NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES usuarios(id)
+);
+
+CREATE TABLE logs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  usuario_id INT,
+  action VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
