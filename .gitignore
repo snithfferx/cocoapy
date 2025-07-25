@@ -4,7 +4,6 @@
 # Project
 !static/
 !static/*
-!colony_counter.py
 !main.py
 !test.py
 !README.md
@@ -19,4 +18,11 @@
 # Database
 !db/
 !db/*
-!connection.py
+# application files
+!modules/
+!modules/*
+!modules/**/*
+# data base
+!db/
+!db/*
+# logs
