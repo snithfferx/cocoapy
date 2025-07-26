@@ -1,5 +1,5 @@
-from flask import Blueprint
-from modules.colonies.colony_counter import contar_colonias_por_cuadrante
+from flask import Blueprint, request, jsonify
+from modules.colonies.coloniesController import contar_colonias_por_cuadrante
 from flask_jwt_extended import jwt_required
 
 counterBp = Blueprint('counter', __name__)

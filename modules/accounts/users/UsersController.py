@@ -1,4 +1,4 @@
-from UserModel import addUser, getUser, updateUser, deleteUser,getAllUsers,getUserByName,getUserByEmail
+from modules.accounts.users.UserModel import addUser, getUser, updateUser, deleteUser,getAllUsers,getUserByName,getUserByEmail
 
 
 def create(user_data: dict) -> dict:

@@ -1,4 +1,5 @@
-from SessionModel import getOne, add, exists, remove,edit
+from modules.accounts.sessions.SessionModel import getOne, add, exists, remove,edit
+
 import time
 
 def create(user: int, token: str, expire: float) -> dict[str,str|int|float]:

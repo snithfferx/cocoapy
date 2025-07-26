@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 # Flask importados
-from flask import Flask, g, request, jsonify, send_from_directory
+from flask import Flask #, g, request, jsonify, send_from_directory
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 # Importar rutas
@@ -17,7 +17,9 @@ app = Flask(__name__, static_folder='static')
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")  # Agrega esto a tu .env
 jwt = JWTManager(app)
 
-CORS(app, origins=["http://localhost:5173"], supports_credentials=True)
+CORS(app, resources={r"/auth/*": {"origins": ["http://localhost:5173"]}}, supports_credentials=True)
+CORS(app, resources={r"/user/*": {"origins": ["http://localhost:5173"]}}, supports_credentials=True)
+CORS(app, resources={r"/counter/*": {"origins": ["http://localhost:5173"]}}, supports_credentials=True)
 
 # Servir archivos estáticos como en FastAPI
 # @app.route("/", defaults={"path": "index.html"})
