@@ -22,6 +22,9 @@
 !modules/
 !modules/*
 !modules/**/*
+!routes/
+!routes/*
+!routes/**/*
 # data base
 !db/
 !db/*
