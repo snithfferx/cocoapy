@@ -28,6 +28,11 @@ function LoginModal({ onClose, onLogin }: Props) {
             onChange={(e) => setUsername(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 focus:border-gray-400 rounded mb-4 text-gray-700 placeholder-gray-400 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
           />
+          <div className="flex justify-between items-center">
+            <a href="/register" className="text-sm text-gray-600 dark:text-gray-400">
+              ¿No tienes una cuenta? Regístrate
+            </a>
+          </div>
           <button
             type="submit"
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-full"

@@ -4,6 +4,8 @@ import UploadImage from "./components/UploadImage";
 import LandingPage from "./components/LandingPage";
 import Results from "./components/Results";
 import About from "./components/About";
+// import Login from "./components/LoginModal";
+import Register from "./components/Register";
 
 function App() {
   return (
@@ -14,6 +16,7 @@ function App() {
           <Route path="/upload" element={<UploadImage />} />
           <Route path="/results" element={<Results />} />
           <Route path="/about" element={<About />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </div>
   );
