@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import UploadImage from "./components/UploadImage";
+import UploadImage from "./components/UploadForm";
 import LandingPage from "./components/LandingPage";
 import Results from "./components/Results";
 import About from "./components/About";
