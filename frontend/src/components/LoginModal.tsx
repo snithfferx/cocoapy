@@ -2,16 +2,17 @@ import React, { useState } from "react";
 
 interface Props {
   onClose: () => void;
-  onLogin: (username: string) => void;
+  onLogin: (username: string, password: string) => void;
 }
 
 function LoginModal({ onClose, onLogin }: Props) {
   const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (username.trim()) {
-      onLogin(username);
+    if (username.trim() && password.trim()) {
+      onLogin(username, password);
       onClose();
     }
   };
@@ -28,24 +29,31 @@ function LoginModal({ onClose, onLogin }: Props) {
             onChange={(e) => setUsername(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 focus:border-gray-400 rounded mb-4 text-gray-700 placeholder-gray-400 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
           />
+          <input
+            type="password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 focus:border-gray-400 rounded mb-4 text-gray-700 placeholder-gray-400 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+          />
           <div className="flex justify-between items-center">
-            <a href="/register" className="text-sm text-gray-600 dark:text-gray-400">
-              ¿No tienes una cuenta? Regístrate
-            </a>
+            <button
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 mb-4 rounded"
+            >
+              Entrar
+            </button>
+            <button
+              onClick={onClose}
+              className="text-sm text-gray-500 hover:bg-red-500 hover:text-white px-4 py-2 rounded"
+            >
+              Cancelar
+            </button>
           </div>
-          <button
-            type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-full"
-          >
-            Entrar
-          </button>
+          <a href="/register" className="bg-slate-700 hover:bg-slate-800 text-sm text-gray-200 dark:text-gray-300 px-4 py-2 mb-4 rounded w-full">
+            ¿No tienes una cuenta? Regístrate
+          </a>
         </form>
-        <button
-          onClick={onClose}
-          className="mt-4 text-sm text-gray-500 hover:underline"
-        >
-          Cancelar
-        </button>
       </div>
     </div>
   );
