@@ -1,11 +1,16 @@
 from modules.accounts.users.UserModel import addUser, getUser, updateUser, deleteUser,getAllUsers,getUserByName,getUserByEmail
 
 
-def create(user_data: dict) -> dict:
-    result = addUser(user_data)
-    if "Error" in result:
-        return {"error": result}
-    return {"message": "User created successfully"}
+def create(userData: dict) -> dict:
+    if not userData["username"] or not userData["email"] or not userData["password"]:
+        return {"status": "error", "message": "Faltan campos", "code": 400}
+    try :
+        result = addUser(userData)
+        if result["status"] == "error":
+            return {"status": "error", "message": result["message"], "code": result["code"]}
+        return result
+    except Exception as err:
+        return {"status": "error", "message": str(err), "code": 500}
 
 def read(user_id: int) -> dict:
     user = getUser(user_id)
