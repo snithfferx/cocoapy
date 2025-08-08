@@ -10,16 +10,23 @@ from flask_jwt_extended import JWTManager
 from routes.auth import authBp
 from routes.user import userBp
 from routes.counter import counterBp
-
+# Env variables
+ALLOWED_HOST= os.getenv('ALLOWED_ORIGIN')
 
 app = Flask(__name__, static_folder='static')
 
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")  # Agrega esto a tu .env
 jwt = JWTManager(app)
 
-CORS(app, resources={r"/auth/*": {"origins": ["http://localhost:5173"]}}, supports_credentials=True)
-CORS(app, resources={r"/user/*": {"origins": ["http://localhost:5173"]}}, supports_credentials=True)
-CORS(app, resources={r"/counter/*": {"origins": ["http://localhost:5173"]}}, supports_credentials=True)
+# Ruta principal
+@app.route('/')
+def index():
+    return "Welcome to CoCoA API"
+
+# Configuración de CORS
+CORS(app, resources={r"/auth/*": {"origins": [ALLOWED_HOST]}}, supports_credentials=True)
+CORS(app, resources={r"/user/*": {"origins": [ALLOWED_HOST]}}, supports_credentials=True)
+CORS(app, resources={r"/counter/*": {"origins": [ALLOWED_HOST]}}, supports_credentials=True)
 
 # Servir archivos estáticos como en FastAPI
 # @app.route("/", defaults={"path": "index.html"})

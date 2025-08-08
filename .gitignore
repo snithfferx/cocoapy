@@ -1,31 +1,7 @@
 # Created by venv; see https://docs.python.org/3/library/venv.html
-*
-!.gitignore
-# Project
-!static/
-!static/*
-!main.py
-!test.py
-!README.md
-!frontend/
-!frontend/*
-!frontend/**/*
-# Project configs
-!requirements.txt
-!run_app.bat
-!Scripts/
-!Scripts/*
-# Database
-!db/
-!db/*
-# application files
-!modules/
-!modules/*
-!modules/**/*
-!routes/
-!routes/*
-!routes/**/*
-# data base
-!db/
-!db/*
-# logs
+.env
+# venv
+pyvenv.cfg
+# folders
+/include
+/Lib
