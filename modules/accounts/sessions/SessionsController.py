@@ -1,4 +1,5 @@
-from modules.accounts.sessions.SessionModel import getOne, add, exists, remove,edit
+from modules.accounts.sessions.SessionModel import getOne, add, exists, remove,edit,getTempSession,addTempSession
+
 
 import time
 
@@ -46,4 +47,12 @@ def validateSession(user: int) -> bool:
         return True
     return False
 
+def readTempSession(user: int) -> dict[str,str]:
+    result = getTempSession(user)
+    return result
 
+def saveTempSession(user: int, token: str, expire: float) -> dict[str,str]:
+    result = addTempSession(user, token, expire)
+    if "Error" in result:
+        return {"error": result}
+    return {"message": f"Session updated for user {user}"}
