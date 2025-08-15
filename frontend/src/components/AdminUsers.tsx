@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { API_URL } from "../config/constants";
+import { useAuth } from "./AuthContext";
 
 interface User {
   id: number;
@@ -11,6 +12,10 @@ interface User {
 function AdminUsers() {
   const [users, setUsers] = useState<User[]>([]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [updatingUserId, setUpdatingUserId] = useState<number | null>(null);
+
+  const { user: currentUser } = useAuth();
 
   const token = localStorage.getItem("token");
 
@@ -18,6 +23,17 @@ function AdminUsers() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
+        if (!token) {
+          setError("No tienes permisos para acceder a esta página.");
+          return;
+        }
+        if (currentUser?.role !== 'admin') {
+          setError("No tienes permisos para acceder a esta página.");
+          return;
+        }
+        setLoading(true);
+
+
         const response = await fetch(API_URL + "/admin/users", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -28,6 +44,7 @@ function AdminUsers() {
 
         if (response.ok && Array.isArray(data.data)) {
           setUsers(data.data);
+          setError("");
         } else {
           setError(data.message || "No se pudo cargar la lista de usuarios.");
         }
@@ -37,15 +54,33 @@ function AdminUsers() {
         } else {
           setError("Error de red o servidor.");
         }
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchUsers();
-  }, [token]);
+  }, []);
 
   // 🔄 Cambiar rol de usuario
   const handleRoleChange = async (userId: number, newRole: string) => {
+    // Prevenir que el usuario se modifique a sí mismo
+    if (currentUser?.id === userId) {
+      alert("No puedes cambiar tu propio rol.");
+      return;
+    }
+
+    setUpdatingUserId(userId);
     try {
+      if (!token) {
+        alert("No tienes permisos para realizar esta acción.");
+        return;
+      }
+      if (currentUser?.role !== 'admin') {
+        alert("No tienes permisos para realizar esta acción.");
+        return;
+      }
+
       const response = await fetch(API_URL + `/admin/users/${userId}/role`, {
         method: "PUT",
         headers: {
@@ -73,9 +108,35 @@ function AdminUsers() {
       } else {
         alert("Error de red o servidor.");
       }
+    } finally {
+      setUpdatingUserId(null);
     }
   };
+if (loading) {
+    return (
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-4">Administración de Usuarios</h1>
+        <div className="flex items-center justify-center py-8">
+          <div className="flex items-center space-x-3">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <span className="text-gray-600">Cargando usuarios...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
+  if (error) {
+    return (
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-4">Administración de Usuarios</h1>
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+          <p className="font-medium">Error</p>
+          <p>{error}</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Administración de Usuarios</h1>
