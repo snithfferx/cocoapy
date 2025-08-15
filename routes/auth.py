@@ -1,66 +1,92 @@
-from modules.accounts.auth.AuthController import userRegistration, userLogin, userResetPassword, verifyEmail
-from flask import Blueprint, request, jsonify
+from modules.accounts.auth.AuthController import (userRegistration, userLogin, userResetPassword, verifyEmail)
+from flask import Blueprint
 from flask_cors import cross_origin
-from dotenv import load_dotenv
-import os
-load_dotenv()
+from flask import current_app
+from middlewares.req_res import get_json, success, bad_request
+from modules.accounts.validators.auth import validate_login_payload, validate_reset_payload,validate_reset_form_payload
 
 authBp = Blueprint("authBp", __name__, url_prefix="/auth")
 
-@authBp.route("/register", methods=["POST", "OPTIONS"])
-@cross_origin(origins=os.getenv("ALLOWED_ORIGIN"), supports_credentials=True)#(userRegistration)
-def register():
-    if not request.json or "password" not in request.json:
-        return jsonify({"error": "Credenciales inválidas"}), 400
+def origin():
+    # Lee el origen permitido desde la config de la app
+    return current_app.config.get("ALLOWED_ORIGIN", "*")
 
-    data = request.json
+@authBp.route("/register", methods=["POST"])
+@cross_origin(origins=lambda: origin(), supports_credentials=True)
+def register():
+    data = get_json()
+
+    msg = validate_login_payload(data)
+    if not msg[0]:
+        return bad_request(msg[1])
+    
     username = data.get("username")
     password = data.get("password")
     email = data.get("email")
-    user = userRegistration(username, email, password)
-    return jsonify(user), int(user["code"])
+    response = userRegistration(username, email, password)
+    if (response['status'] == 'error'):
+        return bad_request(response['message'])
+    return success(response['data'], response['code'])
 
-@authBp.route("/login", methods=["POST", "OPTIONS"])
-@cross_origin(origins=os.getenv("ALLOWED_ORIGIN"), supports_credentials=True)#(userLogin)
+@authBp.route("/login", methods=["POST"])
+@cross_origin(origins=lambda: origin(), supports_credentials=True)
 def login():
-    if not request.json or "password" not in request.json:
-        return jsonify({"error": "Credenciales inválidas"}), 400
+    data = get_json()
     
-    data = request.json
+    msg = validate_login_payload(data)
+    if not msg[0]:
+        return bad_request(msg[1])
+
     username = data.get("username")
     password = data.get("password")
     email = data.get("email", None)
-    user = userLogin(username, email, password)
-    if "error" in user:
-        return jsonify({"error": user["error"]}), 400
-    else:
-        return jsonify({"message": "Inicio de sesión exitoso"}), 200
+    response = userLogin(username, email, password)
+    if (response['status'] == 'error'):
+        return bad_request(response['message'])
+    return success(response['data'], response['code'])
 
-@authBp.route("/reset-password", methods=["POST", "OPTIONS"])
-@cross_origin(origins=os.getenv("ALLOWED_ORIGIN"), supports_credentials=True)
+@authBp.route("/reset-password", methods=["POST"])
+@cross_origin(origins=lambda: origin(), supports_credentials=True)
 def reset_password():
-    if not request.json or "password" not in request.json:
-        return jsonify({"error": "Credenciales inválidas"}), 400
-    
-    data = request.json
-    username = data.get("username")
-    email = data.get("email", None)
-    user = userResetPassword(username, email)
-    if "error" in user:
-        return jsonify({"error": user["error"]}), 400
-    else:
-        return jsonify({"message": "Inicio de sesión exitoso"}), 200
+    data = get_json()
 
-@authBp.route("/verify-email", methods=["POST", "OPTIONS"])
-@cross_origin(origins=os.getenv("ALLOWED_ORIGIN"), supports_credentials=True)
-def verify_email():
-    if not request.json or "token" not in request.json:
-        return jsonify({"error": "Credenciales inválidas"}), 400
+    msg = validate_reset_payload(data)
+    if not msg[0]:
+        return bad_request(msg[1])
     
-    data = request.json
+    email = data.get("email")
+    username = data.get("username")
+    response = userResetPasswordRequest(email, username)
+    if (response['status'] == 'error'):
+        return bad_request(response['message'])
+    return success(response['data'], response['code'])
+
+@authBp.route("/reset-password-form", methods=["POST"])
+@cross_origin(origins=lambda: origin(), supports_credentials=True)
+def reset_password_form():
+    data = get_json()
+    
+    msg = validate_reset_form_payload(data)
+    if not msg[0]:
+        return bad_request(msg[1])
+
     token = data.get("token")
-    user = verifyEmail(token)
-    if "error" in user:
-        return jsonify({"error": user["error"]}), 400
-    else:
-        return jsonify({"message": "Inicio de sesión exitoso"}), 200
+    password = data.get("password")
+    response = userResetPassword(token, password)
+    if (response['status'] == 'error'):
+        return bad_request(response['message'])
+    return success(response['data'], response['code'])
+
+@authBp.route("/verify-email", methods=["POST"])
+@cross_origin(origins=lambda: origin(), supports_credentials=True)
+def verify_email():
+    data = get_json()
+    
+    if not "token" in data:
+        return bad_request("Credenciales inválidas")
+
+    token = data.get("token")
+    response = verifyEmail(token)
+    if (response['status'] == 'error'):
+        return bad_request(response['message'])
+    return success(response['data'], response['code'])
