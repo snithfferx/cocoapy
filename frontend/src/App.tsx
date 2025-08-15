@@ -3,8 +3,11 @@ import Navbar from "./components/Navbar";
 import UploadImage from "./components/UploadForm";
 import LandingPage from "./components/LandingPage";
 import About from "./components/About";
-// import Login from "./components/LoginModal";
 import Register from "./components/Register";
+import Dashboard from "./components/dashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
+import AdminRoute from "./components/AdminRoute";
+import AdminUsers from "./components/AdminUsers";
 
 function App() {
   return (
@@ -15,7 +18,9 @@ function App() {
           <Route path="/upload" element={<UploadImage />} />
           <Route path="/about" element={<About />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="*" element={<div>Not Found</div>} />
+          <Route path="/admin" element={<AdminRoute><AdminUsers /></AdminRoute>} />
         </Routes>
       </div>
   );

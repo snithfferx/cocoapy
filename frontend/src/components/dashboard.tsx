@@ -1,5 +1,15 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-
+/* const token = Cookies.get("session_token");
+fetch("/api/protected", {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
+const role = Cookies.get("user_role");
+if (role === "admin") {
+  // Mostrar panel de administración
+}
+ */
 // Datos de ejemplo para el gráfico de población
 // En una aplicación real, estos datos vendrían de tu backend
 const populationData = [

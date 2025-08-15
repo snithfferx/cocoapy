@@ -1,16 +1,6 @@
 import React from "react";
 import Cookies from "js-cookie";
-/* {
-                "token":access_token,
-                "expiration":expiration,
-                "user":{
-                    "userID":userID,
-                    "name":user["username"],
-                    "email":user["email"],
-                    "role":user["role"],
-                },
-                "sessionID":sessionId
-            } */
+
 interface SessionManagerProps {
   loginResponse: {
     token: string;

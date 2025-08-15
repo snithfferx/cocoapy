@@ -110,7 +110,7 @@ export default function ImageUploadForm() {
     setViewMode(ViewMode.LOADING);
 
     try {
-      const res = await fetch(API_URL + "/contar", {
+      const res = await fetch(API_URL + "/counter/get-colonies", {
         method: "POST",
         body: formDataToSend,
       });

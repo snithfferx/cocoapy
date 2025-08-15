@@ -1,4 +1,5 @@
 import { type ChangeEvent } from "react";
+import { API_URL } from "../config/constants";
 
 function UploadImage() {
   const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -8,9 +9,9 @@ function UploadImage() {
       formData.append("file", target.files[0]);
     }
 
-    const res = await fetch("http://localhost:8000/upload", {
+    const res = await fetch(API_URL + "/counter/get-colonies", {
       method: "POST",
-      body: formData,
+      body: JSON.stringify(formData),
     });
 
     const data = await res.json();
