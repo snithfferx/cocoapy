@@ -90,3 +90,14 @@ def verify_email():
     if (response['status'] == 'error'):
         return bad_request(response['message'])
     return success(response['data'], response['code'])
+
+@authBp.route("/verify-token", methods=["POST"])
+@cross_origin(origins=lambda: origin(), supports_credentials=True)
+def verifyToken():
+    data = get_json()
+    token = data.get("token")
+    try:
+        decoded = jwtDecode<TokenPayload>(token);
+        return decoded;
+    except:
+        return None;
