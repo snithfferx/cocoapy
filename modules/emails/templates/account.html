@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<title>Mensaje desde {{app_name}}</title>		
+		<style>
+			@media only screen and (max-width: 300px){ 
+				body {
+					width:280px !important;
+					margin:auto !important;
+				}
+				.table {width:275px !important;margin:auto !important;}
+				.logo, .titleblock, .linkbelow, .box, .footer, .space_footer{width:auto !important;display: block !important;}		
+				span.title{font-size:20px !important;line-height: 23px !important}
+				span.subtitle{font-size: 14px !important;line-height: 18px !important;padding-top:10px !important;display:block !important;}		
+				td.box p{font-size: 12px !important;font-weight: bold !important;}
+					.table-recap table, .table-recap thead, .table-recap tbody, .table-recap th, .table-recap td, .table-recap tr { 
+					display: block !important; 
+				}
+				.table-recap{width: 275px!important;}
+				.table-recap tr td, .conf_body td{text-align:center !important;}	
+				.address{display: block !important;margin-bottom: 10px !important;}
+				.space_address{display: none !important;}	
+			}
+			@media only screen and (min-width: 301px) and (max-width: 500px) { 
+				body {width:480px!important;margin:auto!important;}
+				.table {width:375px!important;margin:auto!important;}	
+				.logo, .titleblock, .linkbelow, .box, .footer, .space_footer{width:auto!important;display: block!important;}	
+					.table-recap table, .table-recap thead, .table-recap tbody, .table-recap th, .table-recap td, .table-recap tr { 
+					display: block !important; 
+				}
+				.table-recap{width: 375px !important;}
+				.table-recap tr td, .conf_body td{text-align:center !important;}
+			}
+			@media only screen and (min-width: 501px) and (max-width: 768px) {
+				body {width:748px!important;margin:auto!important;}
+				.table {width:743px!important;margin:auto!important;}	
+				.logo, .titleblock, .linkbelow, .box, .footer, .space_footer{width:auto!important;display: block!important;}			
+			}
+			@media only screen and (max-device-width: 480px) { 
+				body {width:460px!important;margin:auto!important;}
+				.table {width:455px;margin:auto!important;}	
+				.logo, .titleblock, .linkbelow, .box, .footer, .space_footer{width:auto!important;display: block!important;}		
+				.table-recap{width: 455px!important;}
+				.table-recap tr td, .conf_body td{text-align:center!important;}	
+				.address{display: block !important;margin-bottom: 10px !important;}
+				.space_address{display: none !important;}	
+			}
+		</style>
+	</head>
+	<body style="-webkit-text-size-adjust:none;background-color:#fff;width:750px;font-family:Open-sans, sans-serif;color:#e41919;font-size:13px;line-height:18px;margin:auto" >
+		<table class="table table-mail" style="width:100%;margin-top:10px;-moz-box-shadow:0 0 5px #a1a0a0;-webkit-box-shadow:0 0 5px #a1a0a0;-o-box-shadow:0 0 5px #a1a0a0;box-shadow:0 0 5px #a1a0a0;filter:progid:DXImageTransform.Microsoft.Shadow(color=#a1a0a0,Direction=134,Strength=5)">
+			<tr>
+				<td class="space" style="width:20px;padding:7px 0">&nbsp;</td>
+				<td align="center" style="padding:7px 0">
+					<table class="table" bgcolor="#000000" style="width:100%">
+						<tr>
+							<td align="center" class="logo" style="border-bottom:4px solid #8a8989;padding:7px 0">
+								<a title="{{app_name}}" href="{{app_urll}}" style="color:#f73527">
+									<img src="{{shop_logo}}" alt="{{app_name}}" />
+								</a>
+							</td>
+						</tr>
+						<tr>
+							<td align="center" class="titleblock" style="padding:7px 0">
+								<font size="2" face="Open-sans, sans-serif" color="#858383">
+									<span class="title" style="font-weight:500;font-size:26px;text-transform:uppercase;line-height:33px">
+										{{username}}
+									</span><br/>
+									<span class="subtitle" style="font-weight:500;font-size:16px;text-transform:uppercase;line-height:25px">Gracias por registrarse.</span>
+								</font>
+							</td>
+						</tr>
+						<tr>
+							<td class="space_footer" style="padding:0!important">&nbsp;</td>
+						</tr>
+						<tr>
+							<td class="box" style="border:1px solid #838282;background-color:#696767;padding:7px 0">
+								<table class="table" style="width:100%">
+									<tr>
+										<td width="10" style="padding:7px 0">&nbsp;</td>
+										<td style="padding:7px 0">
+											<font size="2" face="Open-sans, sans-serif" color="#555454">
+												<p data-html-only="1" style="border-bottom:1px solid #bdbaba;margin:3px 0 7px;text-transform:uppercase;font-weight:500;font-size:18px;color:#D6D4D4;padding:10px">
+													Datos de acceso</p>
+												<span style="color:#afaeae">
+													Estos son sus datos de acceso:<br />
+													<span style="color:#1d1922"><strong>Dirección de correo electrónico: <a href="mailto:{{email}}" style="color:#f73527">{{email}}</a></strong></span>
+												</span>
+											</font>
+										</td>
+										<td width="10" style="padding:7px 0">&nbsp;</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td class="space_footer" style="padding:0 !important">&nbsp;</td>
+						</tr>
+						<tr>
+							<td class="box" style="border:1px solid #838282;background-color:#696767;padding:7px 0">
+								<table class="table" style="width:100%">
+									<tr>
+										<td width="10" style="padding:7px 0">&nbsp;</td>
+										<td style="padding:7px 0">
+											<font size="2" face="Open-sans, sans-serif" color="#555454">
+												<p style="border-bottom:1px solid #D6D4D4;margin:3px 0 7px;text-transform:uppercase;font-weight:600;font-size:18px;color:#000000;padding-bottom:10px">
+													Tome nota de estos consejos de Seguridad
+												</p>
+												<ol style="margin-bottom:0; color:#f7d872">
+													<li>Mantenga los datos de su cuenta en un lugar seguro.</li>
+													<li>No comparta sus datos de acceso con otras personas.</li>
+													<li>Cambie su contraseña regularmente.</li>
+													<li>Si sospecha que alguien está utilizando ilegalmente su cuenta, avísenos inmediatamente.</li>
+												</ol>
+											</font>
+										</td>
+										<td width="10" style="padding:7px 0">&nbsp;</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td class="space_footer" style="padding:0!important">&nbsp;</td>
+						</tr>
+						<tr>
+							<td class="space_footer" style="padding:0!important">&nbsp;</td>
+						</tr>
+						<tr>
+							<td align="center" class="footer" style="border-top:4px solid #858383;padding:7px 0">
+								<span style="color:#a1a0a0;"><a href="{{app_urll}}" style="color:#f73527">{{app_name}}</a>
+									&nbsp;powered by <a href="http://www.bytes4run.com/" style="color:#f73527">Bytes4Run&reg;</a></span>
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td class="space" style="width:20px;padding:7px 0">&nbsp;</td>
+			</tr>
+		</table>
+	</body>
+</html>

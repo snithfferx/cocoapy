@@ -1,0 +1,28 @@
+
+[{app_urll}] 
+
+Hola {{username}},
+
+Gracias por registrarse. 
+
+Datos de acceso:
+
+DIRECCIÓN DE CORREO ELECTRÓNICO: {{email}} 		 
+
+Tome nota de estos consejos de seguridad:
+
+* Mantenga los datos de su cuenta en un lugar seguro.
+
+* No comparta sus datos de acceso con otras personas.
+
+* Cambie su contraseña regularmente.
+
+* Si sospecha que alguien está utilizando ilegalmente su cuenta,
+avísenos inmediatamente.
+
+Ahora puede realizar compras en nuestra tienda: {{app_name}}
+[{app_urll}] 
+
+{{app_name}} [{app_urll}] powered by
+Bytes4Run(R) [http://www.bytes4run.com/] 
+

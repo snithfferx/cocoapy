@@ -5,6 +5,7 @@ from email.mime.multipart import MIMEMultipart
 import ssl
 from dotenv import load_dotenv
 load_dotenv()
+from modules.core.controller import response
 
 SENDER = os.getenv("APP_SMTP_EMAIL")
 PASSWORD = os.getenv("APP_SMTP_PASS")
@@ -19,7 +20,7 @@ def send_email(receiver_email, subject,data, template):
     Utiliza SSL para una conexión segura.
     """
     if not all([SENDER, PASSWORD]):
-        return False, "Faltan credenciales del servidor de correo."
+        return response("Faltan credenciales del servidor de correo.", None, 400)
 
     message = MIMEMultipart("alternative")
     message["Subject"] = subject
@@ -43,7 +44,7 @@ def send_email(receiver_email, subject,data, template):
             server.starttls(context=context)  # Inicia la encriptación TLS
             server.login(SENDER, PASSWORD)
             server.sendmail(SENDER, receiver_email, message.as_string())
-        return True, "Correo enviado con éxito."
+        return response("Correo enviado con éxito.", None, 200)
     except Exception as e:
         print(f"Error al enviar el correo a {receiver_email}: {e}")
-        return False, str(e)
+        return response(str(e), None, 500)
