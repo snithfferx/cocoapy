@@ -1,14 +1,6 @@
-import { useEffect, useState } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useEffect, useState, useReducer,useCallback } from "react";
 import { API_URL } from "../config/constants";
 import AnalysisResults from "./ResultViewer";
-
-// enum ViewMode {
-//   FORM = 'FORM',
-//   LOADING = 'LOADING',
-//   RESULTS = 'RESULTS',
-//   ERROR = 'ERROR',
-// }
 
 const ViewMode = {
   FORM: 'FORM',
@@ -49,6 +41,170 @@ interface AnalysisData {
 }
 
 type ViewMode = keyof typeof ViewMode;
+
+interface UploadState {
+  viewMode: ViewMode;
+  formData: FormData;
+  file: File | null;
+  imagePreviewUrl: string | null;
+  analysisData: any | null;
+  error: string | null;
+  isLoading: boolean;
+  isDragging: boolean;
+}
+
+// Acciones posibles
+type UploadAction =
+  | { type: 'SET_VIEW_MODE'; payload: ViewMode }
+  | { type: 'UPDATE_FORM_DATA'; payload: Partial<FormData> }
+  | { type: 'SET_FILE'; payload: { file: File; previewUrl: string } }
+  | { type: 'SET_ANALYSIS_DATA'; payload: any }
+  | { type: 'SET_ERROR'; payload: string }
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'SET_DRAGGING'; payload: boolean }
+  | { type: 'RESET_FORM' }
+  | { type: 'REMOVE_FILE' };
+
+// Estado inicial
+const initialState: UploadState = {
+  viewMode: ViewMode.FORM,
+  formData: {
+    name: '',
+    quarters: '2',
+    threshold: '50',
+    file: null,
+  },
+  file: null,
+  imagePreviewUrl: null,
+  analysisData: null,
+  error: null,
+  isLoading: false,
+  isDragging: false,
+};
+
+// Reducer function
+const uploadReducer = (state: UploadState, action: UploadAction): UploadState => {
+  switch (action.type) {
+    case 'SET_VIEW_MODE':
+      return { ...state, viewMode: action.payload };
+
+    case 'UPDATE_FORM_DATA':
+      return {
+        ...state,
+        formData: { ...state.formData, ...action.payload },
+      };
+
+    case 'SET_FILE':
+      return {
+        ...state,
+        file: action.payload.file,
+        imagePreviewUrl: action.payload.previewUrl,
+        formData: { ...state.formData, file: action.payload.file },
+        error: null,
+      };
+
+    case 'SET_ANALYSIS_DATA':
+      return {
+        ...state,
+        analysisData: action.payload,
+        viewMode: ViewMode.RESULTS,
+        isLoading: false,
+      };
+
+    case 'SET_ERROR':
+      return {
+        ...state,
+        error: action.payload,
+        viewMode: ViewMode.ERROR,
+        isLoading: false,
+      };
+
+    case 'SET_LOADING':
+      return {
+        ...state,
+        isLoading: action.payload,
+        viewMode: action.payload ? ViewMode.LOADING : state.viewMode,
+      };
+
+    case 'SET_DRAGGING':
+      return { ...state, isDragging: action.payload };
+
+    case 'REMOVE_FILE':
+      // Liberar URL de previsualización si existe
+      if (state.imagePreviewUrl) {
+        URL.revokeObjectURL(state.imagePreviewUrl);
+      }
+      return {
+        ...state,
+        file: null,
+        imagePreviewUrl: null,
+        formData: { ...state.formData, file: null },
+        error: null,
+      };
+
+    case 'RESET_FORM':
+      // Liberar URL de previsualización si existe
+      if (state.imagePreviewUrl) {
+        URL.revokeObjectURL(state.imagePreviewUrl);
+      }
+      return initialState;
+
+    default:
+      return state;
+  }
+};
+
+// Hook personalizado para usar el reducer
+export const useUploadForm = () => {
+  const [state, dispatch] = useReducer(uploadReducer, initialState);
+
+  const updateFormData = useCallback((data: Partial<FormData>) => {
+    dispatch({ type: 'UPDATE_FORM_DATA', payload: data });
+  }, []);
+
+  const setFile = useCallback((file: File) => {
+    const previewUrl = URL.createObjectURL(file);
+    dispatch({ type: 'SET_FILE', payload: { file, previewUrl } });
+  }, []);
+
+  const removeFile = useCallback(() => {
+    dispatch({ type: 'REMOVE_FILE' });
+  }, []);
+
+  const setError = useCallback((error: string) => {
+    dispatch({ type: 'SET_ERROR', payload: error });
+  }, []);
+
+  const setLoading = useCallback((loading: boolean) => {
+    dispatch({ type: 'SET_LOADING', payload: loading });
+  }, []);
+
+  const setAnalysisData = useCallback((data: any) => {
+    dispatch({ type: 'SET_ANALYSIS_DATA', payload: data });
+  }, []);
+
+  const resetForm = useCallback(() => {
+    dispatch({ type: 'RESET_FORM' });
+  }, []);
+
+  const setDragging = useCallback((dragging: boolean) => {
+    dispatch({ type: 'SET_DRAGGING', payload: dragging });
+  }, []);
+
+  return {
+    state,
+    actions: {
+      updateFormData,
+      setFile,
+      removeFile,
+      setError,
+      setLoading,
+      setAnalysisData,
+      resetForm,
+      setDragging,
+    },
+  };
+};
 
 export default function ImageUploadForm() {
   const [file, setFile] = useState<File | null>(null);
@@ -447,6 +603,7 @@ export default function ImageUploadForm() {
           </form>
         </section>
       )}
+
       {viewMode === ViewMode.LOADING && (
         <div className="flex items-center justify-center text-blue-600 font-semibold max-w-xl mx-auto bg-white shadow-lg rounded-lg p-8 mt-10">
           <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
