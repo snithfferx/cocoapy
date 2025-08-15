@@ -5,12 +5,14 @@ import LandingPage from "./components/LandingPage";
 import About from "./components/About";
 import Register from "./components/Register";
 import Dashboard from "./components/dashboard";
-import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
 import AdminUsers from "./components/AdminUsers";
+import { AuthProvider } from "./components/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
+    <AuthProvider>
       <div className="min-h-screen bg-gray-100">
         <Navbar />
         <Routes>
@@ -23,6 +25,7 @@ function App() {
           <Route path="*" element={<div>Not Found</div>} />
         </Routes>
       </div>
+    </AuthProvider>
   );
 }
 
