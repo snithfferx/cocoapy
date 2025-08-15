@@ -19,8 +19,8 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="*" element={<div>Not Found</div>} />
           <Route path="/admin" element={<AdminRoute><AdminUsers /></AdminRoute>} />
+          <Route path="*" element={<div>Not Found</div>} />
         </Routes>
       </div>
   );
