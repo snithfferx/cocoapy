@@ -33,11 +33,11 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV 'E:\CoCoA'
+set -gx VIRTUAL_ENV 'E:\CoCoA\v1.1'
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/"Scripts $PATH
-set -gx VIRTUAL_ENV_PROMPT CoCoA
+set -gx VIRTUAL_ENV_PROMPT v1.1
 
 # Unset PYTHONHOME if set.
 if set -q PYTHONHOME
@@ -57,7 +57,7 @@ if test -z "$VIRTUAL_ENV_DISABLE_PROMPT"
         set -l old_status $status
 
         # Output the venv prompt; color taken from the blue of the Python logo.
-        printf "%s(%s)%s " (set_color 4B8BBE) CoCoA (set_color normal)
+        printf "%s(%s)%s " (set_color 4B8BBE) v1.1 (set_color normal)
 
         # Restore the return status of the previous command.
         echo "exit $old_status" | .
